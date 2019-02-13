@@ -11,9 +11,6 @@ class Database extends mysqli
         if($this->connect_error){
             echo "Failed to connect to database" . $this->connect_error;
         }
-        else{
-            echo "Connected to database <br>";
-        }
     }
 
     public function CreateTables($connect){
@@ -73,7 +70,7 @@ class Database extends mysqli
             last_mode datetime 
         );");
     }
-    public function importStyles($file, $connect){
+    public function ImportStyles($file, $connect){
         $values = array();  
         $file = fopen($file, 'r');
         while($row = fgetcsv($file)){
@@ -91,7 +88,7 @@ class Database extends mysqli
         $firstRowQuery = "DELETE FROM styles WHERE id = 0;";  
         mysqli_query($connect, $firstRowQuery); 
     }
-    public function importCategories($file, $connect){
+    public function ImportCategories($file, $connect){
         $values = array();  
         $file = fopen($file, 'r');
         while($row = fgetcsv($file)){
@@ -108,7 +105,7 @@ class Database extends mysqli
         $firstRowQuery = "DELETE FROM categories WHERE id = 0;";  
         mysqli_query($connect, $firstRowQuery); 
     }
-    public function importBeers($file, $connect){
+    public function ImportBeers($file, $connect){
         ini_set('mysqli.connect_timeout',300);
         ini_set('default_socket_timeout',300);
         $values = array();  
@@ -152,7 +149,7 @@ class Database extends mysqli
         mysqli_query($connect, $firstRowQuery); 
     }
 
-    public function importBreweries($file, $connect){
+    public function ImportBreweries($file, $connect){
 
         $values = array();  
         $file = fopen($file, 'r');
@@ -182,7 +179,7 @@ class Database extends mysqli
         mysqli_query($connect, $firstRowQuery); 
     }
 
-    public function importGeocodes($file, $connect){
+    public function ImportGeocodes($file, $connect){
         $values = array();  
         $file = fopen($file, 'r');
         while($row = fgetcsv($file)){
@@ -203,11 +200,11 @@ class Database extends mysqli
 
     public function ImportData($beersFile, $breweriesFile, $categoriesFile, $geocodesFie, $stylesFile, $categories){
         $this->CreateTables($categories);
-        $this->importBeers($beersFile, $categories);
-        $this->importBreweries($breweriesFile, $categories);
-        $this->importCategories($categoriesFile, $categories);
-        $this->importGeocodes($geocodesFie, $categories);
-        $this->importStyles($stylesFile, $categories);
+        $this->ImportBeers($beersFile, $categories);
+        $this->ImportBreweries($breweriesFile, $categories);
+        $this->ImportCategories($categoriesFile, $categories);
+        $this->ImportGeocodes($geocodesFie, $categories);
+        $this->ImportStyles($stylesFile, $categories);
     }
 }
 ?>

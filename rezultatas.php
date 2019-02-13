@@ -1,9 +1,9 @@
 <?php
-include("funkcionalumas.php");
-$lat =  $_POST['lat'];
-$long =  $_POST['long'];
-echo "Įveskite LAT koordinates: " . $lat . "<br />";
-echo "Įveskite LONG koordinates: " .$long . "<br />";
+include("logic.php");
+$startLat =  $_POST['lat'];
+$startLong =  $_POST['long'];
+echo "Įveskite LAT koordinates: " . $startLat . "<br />";
+echo "Įveskite LONG koordinates: " .$startLong . "<br />";
 
 $connect = mysqli_connect("localhost", "root", "", "routesdb");  
 
@@ -18,38 +18,35 @@ if ($result->num_rows > 0) {
 } else {
     echo "0 results";
 }
-
-    $startLat = $_POST['lat'];
-    $startLong = $_POST['long'];
-    $nueitasKelias = 0;
-    $visasKelias = 0;
-    $keliasNamo = 0;
-    $marsrutas = array();    
-    while($visasKelias <= 2000){
+    $currentDistance = 0;
+    $fullDistance = 0;
+    $homeDistance = 0;
+    $route = array();    
+    while($fullDistance <= 2000){
         $minValue = array();
-        $min = 9999999999;        
+        $shortestWay = 9999999999;        
         for($i = 0; $i <= count($values) - 1; $i++){
-            if(empty($marsrutas)){
-                $distanceFirstRoute = distance($startLat, $startLong, $values[$i]["latitude"], $values[$i]["longitude"]);
-                if($distanceFirstRoute < $min){
-                    $min = $distanceFirstRoute;
+            if(empty($route)){
+                $distanceFirstRoute = Distance($startLat, $startLong, $values[$i]["latitude"], $values[$i]["longitude"]);
+                if($distanceFirstRoute < $shortestWay){
+                    $shortestWay = $distanceFirstRoute;
                     $minValue = $values[$i];
                 }
             }
             else{
-                $marsrutasLatitude = $marsrutas[count($marsrutas)-1]["latitude"];
-                $marsrutasLongitude = $marsrutas[count($marsrutas)-1]["longitude"];
+                $routeLatitude = $route[count($route)-1]["latitude"];
+                $routeLongitude = $route[count($route)-1]["longitude"];
 
                 if(!empty($values[$i])){
                     $valuesLatitude = $values[$i]["latitude"];
                     $valuesLongitude = $values[$i]["longitude"];
                 }
 
-                if(!empty($marsrutas[count($marsrutas) - 1])){
-                    if($marsrutasLatitude != $valuesLatitude && $marsrutasLongitude != $valuesLongitude){
-                        $distanceFirstRoute = distance($marsrutasLatitude, $marsrutasLongitude, $valuesLatitude, $valuesLongitude);
-                        if($distanceFirstRoute < $min){
-                            $min = $distanceFirstRoute;
+                if(!empty($route[count($route) - 1])){
+                    if($routeLatitude != $valuesLatitude && $routeLongitude != $valuesLongitude){
+                        $distanceFirstRoute = Distance($routeLatitude, $routeLongitude, $valuesLatitude, $valuesLongitude);
+                        if($distanceFirstRoute < $shortestWay){
+                            $shortestWay = $distanceFirstRoute;
                             $minValue = $values[$i];
                         }
                     }
@@ -64,15 +61,23 @@ if ($result->num_rows > 0) {
                 }
             }
         }
-        $marsrutas[] = $minValue;
-        $nueitasKelias += $min;
-        $ilgis = count($marsrutas) - 1;
-        if(!empty($marsrutas[count($marsrutas) - 1])){
-            $keliasNamo = distance($startLat, $startLong, $marsrutas[$ilgis]["latitude"], $marsrutas[$ilgis]["longitude"]);
+        $route[] = $minValue;
+        $currentDistance += $shortestWay;
+        $ammountOfBreweries = count($route) - 1;
+        if(!empty($route[count($route) - 1])){
+            $homeDistance = Distance($startLat, $startLong, $route[$ammountOfBreweries]["latitude"], $route[$ammountOfBreweries]["longitude"]);
         }
-        $visasKelias = $nueitasKelias + $keliasNamo;
+        $fullDistance = $currentDistance + $homeDistance;
     }
-    unset($marsrutas[count($marsrutas) - 1]);
-    spauzdinti($marsrutas, $startLat, $startLong);
-    SpauzdintiSurinktusAlus($marsrutas);
+    unset($route[count($route) - 1]);
+    PrintBreweries($route, $startLat, $startLong);
+    PrintCollectedBeers($route);
 ?>  
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+<form action="index.php" method="post" class="col-md-6 mb-3">
+    <label for="firstName"><br><br>Find another route: </label>
+    <div class="pt-3">
+        <button type="submit" class="btn btn-primary" name="submit">Back</button>  
+    </div>
+</form>

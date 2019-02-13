@@ -11,7 +11,7 @@ echo "LONG: " . 11.100790 . "<br>";
     <label for="firstName">LONG: </label>
     <input type="number" step="0.000001" class="form-control" id="firstName" placeholder="" value="" required="" name = "long">
     <div class="pt-3">
-        <button type="submit" class="btn btn-primary" name="submit">Primary</button>  
+        <button type="submit" class="btn btn-primary" name="submit">Find route</button>  
     </div>
 </form>
 

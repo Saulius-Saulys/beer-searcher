@@ -1,5 +1,5 @@
 <?php
-function distance($lat1, $lon1, $lat2, $lon2) {
+function Distance($lat1, $lon1, $lat2, $lon2) {
     if (($lat1 == $lat2) && ($lon1 == $lon2)) {
       return 0;
     }
@@ -12,10 +12,8 @@ function distance($lat1, $lon1, $lat2, $lon2) {
       return $kilometers;
     }
 }
-function SpauzdintiKeliaNuoNamu(){
 
-}
-function Spauzdinti($marsrutas, $startLat, $startLong){
+function PrintBreweries($marsrutas, $startLat, $startLong){
     echo "<br>Found " . count($marsrutas) . " beer factories: <br>";
     echo "-> HOME: " . $startLat . " , " . $startLong . " distance 0 km <br>";
 
@@ -45,7 +43,7 @@ function Spauzdinti($marsrutas, $startLat, $startLong){
     echo "<br>Full distance: " . round($fullDistance);
 }
 
-function SpauzdintiSurinktusAlus($marsrutas){
+function PrintCollectedBeers($marsrutas){
     $connect = mysqli_connect("localhost", "root", "", "routesdb");
     $values = array();  
     
@@ -64,6 +62,5 @@ function SpauzdintiSurinktusAlus($marsrutas){
     for($i = 0; $i <= count($values) - 1; $i++){
         echo "<br>->" . $values[$i]["name"];
     }
-    
 }
 ?>
